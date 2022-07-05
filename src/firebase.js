@@ -1,10 +1,10 @@
 import { initializeApp } from "firebase/app";
 import {getAuth} from "firebase/auth";
 
-const API_KEY = process.env.REACT_APP_FIREBASE_API_KEY;
+
 
 const firebaseConfig = {
-  apiKey: API_KEY,
+  apiKey: "AIzaSyBs7WOgN6JR9NJ2KQtMQl7hcqyHIa0mOFc",
   authDomain: "admin-panel-41821.firebaseapp.com",
   projectId: "admin-panel-41821",
   storageBucket: "admin-panel-41821.appspot.com",
