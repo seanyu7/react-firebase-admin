@@ -10,11 +10,7 @@ const DarkModeReducer = (state, action) => {
         darkMode: true,
       };
     }
-    case "TOGGLE": {
-      return {
-        darkMode: !state.darkMode,
-      };
-    }
+    
     default:
       return state;
   }
