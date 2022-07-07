@@ -3,25 +3,44 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
-import { addDoc, collection, doc, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
-import { db } from "../../firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+  } from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
 
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
+  const [data, setData] = useState({});
 
-  const handleAdd = async(e)=>{
-  e.preventDefault();
+  const handleInput = (e) => {
+    const id = e.target.id;
+    const value = e.target.value;
 
-try{
-  const res = await addDoc(collection(db, "cities"), {
-    name: "Los Angeles",
-    state: "CA",
-    country: "USA",
-    Timestamp: serverTimestamp(),
-  });
-}catch(err){
-  console.log(err);
-}
+    setData({ ...data, [id]: value });
+  };
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+      await setDoc(doc(db, "users",res.user.uid), {
+        ...data,
+        Timestamp: serverTimestamp(),
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -60,7 +79,11 @@ try{
               {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input type={input.type} placeholder={input.placeholder} />
+                  <input
+                    type={input.type}
+                    placeholder={input.placeholder}
+                    onChange={handleInput}
+                  />
                 </div>
               ))}
               <button type="submit">Send</button>
