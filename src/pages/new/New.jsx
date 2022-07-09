@@ -9,15 +9,13 @@ import {
   doc,
   serverTimestamp,
   setDoc,
-  } from "firebase/firestore";
+} from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
 
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
   const [data, setData] = useState({});
-
   const handleInput = (e) => {
     const id = e.target.id;
     const value = e.target.value;
@@ -32,11 +30,11 @@ const New = ({ inputs, title }) => {
       const res = await createUserWithEmailAndPassword(
         auth,
         data.email,
-        data.password,
+        data.password
       );
-      await setDoc(doc(db, "users",res.user.uid), {
+      await setDoc(doc(db, "users", res.user.uid), {
         ...data,
-        Timestamp: serverTimestamp(),
+        timeStamp: serverTimestamp(),
       });
     } catch (err) {
       console.log(err);
@@ -80,6 +78,7 @@ const New = ({ inputs, title }) => {
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
                   <input
+                    id={input.id}
                     type={input.type}
                     placeholder={input.placeholder}
                     onChange={handleInput}
