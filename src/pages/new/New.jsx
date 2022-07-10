@@ -14,11 +14,13 @@ import { auth, db, storage } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
   const [data, setData] = useState({});
   const [percentage, setPercentage] = useState(null);
+  const navigate = useNavigate;
 
   useEffect(() => {
     const uploadFile = () => {
@@ -77,6 +79,7 @@ const New = ({ inputs, title }) => {
         ...data,
         timeStamp: serverTimestamp(),
       });
+      navigate(-1);
     } catch (err) {
       console.log(err);
     }
@@ -126,7 +129,12 @@ const New = ({ inputs, title }) => {
                   />
                 </div>
               ))}
-              <button disabled ={percentage !== null && percentage<100} type="submit">Send</button>
+              <button
+                disabled={percentage !== null && percentage < 100}
+                type="submit"
+              >
+                Send
+              </button>
             </form>
           </div>
         </div>
