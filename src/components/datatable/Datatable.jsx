@@ -4,7 +4,7 @@ import { userColumns, userRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { db } from "../../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const Datatable = () => {
   let list = [];
@@ -28,9 +28,16 @@ const Datatable = () => {
 
   console.log(data);
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
-  };
+  const handleDelete = async(id) => {
+    try {
+      await deleteDoc(doc(db, "users", id));
+      setData(data.filter((item) => item.id !== id));
+    }catch(err){
+      console.log(err);
+    }
+
+    }
+  
 
   const actionColumn = [
     {
@@ -73,5 +80,6 @@ const Datatable = () => {
     </div>
   );
 };
+
 
 export default Datatable;
