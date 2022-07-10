@@ -7,7 +7,7 @@ import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 const Datatable = () => {
-  let list=[];
+  let list = [];
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -15,17 +15,18 @@ const Datatable = () => {
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
-          list.push(doc);
+          list.push({id:doc.id, ...doc.data()});
         });
+        setData(list);
+        console.log(list);
       } catch (err) {
         console.log(err);
       }
     };
-    fetchData()
+    fetchData();
   }, []);
 
-console.log(data);
-
+  console.log(data);
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
