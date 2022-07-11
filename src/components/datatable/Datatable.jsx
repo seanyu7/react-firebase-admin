@@ -4,40 +4,51 @@ import { userColumns, userRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { db } from "../../firebase";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
 
 const Datatable = () => {
   let list = [];
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        querySnapshot.forEach((doc) => {
-          list.push({id:doc.id, ...doc.data()});
+    const unsub = onSnapshot(
+      collection(db, "users"),
+      (snapshot) => {
+        let list = [];
+        snapshot.docs.forEach((doc) => {
+          list.push({
+            id: doc.id,
+            ...doc.data(),
+          });
         });
         setData(list);
-        console.log(list);
-      } catch (err) {
-        console.log(err);
+      },
+      (error) => {
+        console.log(error);
       }
+    );
+
+    return () => {
+      unsub();
     };
-    fetchData();
   }, []);
 
   console.log(data);
 
-  const handleDelete = async(id) => {
+  const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "users", id));
       setData(data.filter((item) => item.id !== id));
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
-
-    }
-  
+  };
 
   const actionColumn = [
     {
@@ -80,6 +91,5 @@ const Datatable = () => {
     </div>
   );
 };
-
 
 export default Datatable;
